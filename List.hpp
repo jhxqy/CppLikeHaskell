@@ -26,9 +26,9 @@ struct Head;
 template<typename T>
 struct Head<List<T>>;
 
-template<typename T,typename List<T>::type H,typename List<T>::type ...Args>
+template<typename T,T H,T ...Args>
 struct Head<List<T,H,Args...>>{
-    static constexpr typename List<T>::type value=H;
+    static constexpr T value=H;
 };
 
 namespace Imple{
@@ -48,15 +48,15 @@ struct FindOneBetter;
 template<template<typename T,T,T> class Trait,typename T>
 struct FindOneBetter<Trait,List<T>>;
 
-template<template<typename T,T,T> class Trait,typename T,typename List<T>::type H>
+template<template<typename T,T,T> class Trait,typename T,T H>
 struct FindOneBetter<Trait,List<T,H>>{
-    static constexpr typename List<T>::type value =H;
+    static constexpr T value =H;
 };
 
-template <template<typename T,T,T> class Trait,typename T,typename List<T>::type H,typename List<T>::type...Args>
+template <template<typename T,T,T> class Trait,typename T,T H,T...Args>
 struct FindOneBetter<Trait,List<T,H,Args...>>{
-    static constexpr typename List<T>::type nextMax=FindOneBetter<Trait, List<T, Args...>>::value;
-    static constexpr typename List<T>::type value=Trait<T,nextMax,H>::value;
+    static constexpr T nextMax=FindOneBetter<Trait, List<T, Args...>>::value;
+    static constexpr T value=Trait<T,nextMax,H>::value;
 };
 
 }
@@ -70,11 +70,11 @@ template<typename List>
 struct Tail;
 template<typename T>
 struct Tail<List<T>>;
-template<typename T,typename List<T>::type H>
+template<typename T, T H>
 struct Tail<List<T,H>>{
     using type=List<T>;
 };
-template<typename T,typename List<T>::type H,typename List<T>::type...Args>
+template<typename T, T H, T...Args>
 struct Tail<List<T,H,Args...>>{
     using type=List<T,Args...>;
 };
@@ -95,12 +95,12 @@ struct Length<List<T>>{
     static constexpr size_t value=0;
 };
 
-template<typename T,typename List<T>::type H>
+template<typename T,T H>
 struct Length<List<T,H>>{
     static constexpr size_t value=1;
 };
 
-template<typename T,typename List<T>::type H,typename List<T>::type...Args>
+template<typename T,T H,T...Args>
 struct Length<List<T,H,Args...>>{
     static constexpr size_t value=1+Length<List<T,Args...>>::value;
 };
@@ -119,17 +119,17 @@ struct OpListValue;
 
 template<template<typename T,T,T>class Op,typename T>
 struct OpListValue<Op, List<T>>{
-    static constexpr typename List<T>::type value=0;
+    static constexpr T value=0;
 };
 
-template<template<typename T,T,T>class Op,typename T,typename List<T>::type H>
+template<template<typename T,T,T>class Op,typename T,T H>
 struct OpListValue<Op, List<T,H>>{
-    static constexpr typename List<T>::type value=H;
+    static constexpr T value=H;
 };
 
-template<template<typename T,T,T>class Op,typename T,typename List<T>::type H,typename List<T>::type...Args>
+template<template<typename T,T,T>class Op,typename T,T H,T...Args>
 struct OpListValue<Op, List<T,H,Args...>>{
-    static constexpr typename List<T>::type value=Op<T,OpListValue<Op, List<T,Args...>>::value,H>::value;
+    static constexpr T value=Op<T,OpListValue<Op, List<T,Args...>>::value,H>::value;
 };
 
 
@@ -144,7 +144,7 @@ using Product=Imple::OpListValue<Imple::MulValue, List>;
 template<typename List,typename List::type Value>
 struct PushFront;
 
-template<typename T,T...Args,typename List<T>::type Value>
+template<typename T,T...Args,T Value>
 struct PushFront<List<T,Args...>,Value>{
     using type=List<T,Value,Args...>;
 };
@@ -152,7 +152,7 @@ struct PushFront<List<T,Args...>,Value>{
 template<typename List,typename List::type Value>
 struct PushBack;
 
-template<typename T,T...Args,typename List<T>::type Value>
+template<typename T,T...Args,T Value>
 struct PushBack<List<T,Args...>,Value>{
     using type=List<T,Args...,Value>;
 };
@@ -167,12 +167,12 @@ struct ListCnt<List<T,Args1...>, List<T,Args2...>>{
 template<typename List,typename List::type Value>
 struct Elem;
 
-template<typename T,typename List<T>::type Value>
+template<typename T,T Value>
 struct Elem<List<T>,Value>{
     static constexpr bool value=false;
 };
 
-template<typename T,typename List<T>::type H,typename List<T>::type ...Args,typename List<T>::type Value>
+template<typename T,T H,T ...Args,T Value>
 struct Elem<List<T,H,Args...>,Value>{
     static constexpr bool value=(H==Value)||Elem<List<T,Args...>,Value>::value;
 };
@@ -213,6 +213,25 @@ struct PrintList{
         std::cout<<"]"<<std::endl;
     }
 };
+
+
+template<typename List>
+struct Last;
+template<typename T>
+struct Last<List<T>>;
+
+template<typename T,T H>
+struct Last<List<T,H>>{
+    static constexpr T value=H;
+};
+template<typename T,T H,T...Args>
+struct Last<List<T,H,Args...>>{
+    static constexpr T value=Last<List<T,Args...>>::value;
+};
+
+
+
+
 } 
 
 #endif /* List_hpp */

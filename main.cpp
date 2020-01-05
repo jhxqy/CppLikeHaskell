@@ -33,5 +33,6 @@ int main(){
     cout<<Elem<l4, 4>::value<<endl;
     cout<<Elem<l4, 5>::value<<endl;
     PrintList<l3>::Show();
+    cout<<Last<l4>::value<<endl;
 }
 
