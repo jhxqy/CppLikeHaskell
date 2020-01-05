@@ -10,6 +10,7 @@
 #define List_hpp
 
 #include <stdio.h>
+#include <iostream>
 #include <type_traits>
 namespace List{
 
@@ -176,9 +177,42 @@ struct Elem<List<T,H,Args...>,Value>{
     static constexpr bool value=(H==Value)||Elem<List<T,Args...>,Value>::value;
 };
 
+namespace Imple{
+template<typename List>
+struct PrintListImple;
 
+template<typename T>
+struct PrintListImple<List<T>>{
+    static void Show(){
+    //    std::cout<<"]"<<std::endl;
+    }
+};
+template<typename T,T H>
+struct PrintListImple<List<T,H>>{
+    static void Show(){
+        std::cout<<H;
+        PrintListImple<List<T>>::Show();
+    }
+};
 
+template<typename T,T H,T...Args>
+struct PrintListImple<List<T,H,Args...>>{
+    static void Show(){
+        std::cout<<H<<",";
+        PrintListImple<List<T, Args...>>::Show();
+    }
+};
 
 }
+
+template<typename List>
+struct PrintList{
+    static void Show(){
+        std::cout<<"[";
+        Imple::PrintListImple<List>::Show();
+        std::cout<<"]"<<std::endl;
+    }
+};
+} 
 
 #endif /* List_hpp */
