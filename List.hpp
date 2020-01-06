@@ -229,9 +229,85 @@ struct Last<List<T,H,Args...>>{
     static constexpr T value=Last<List<T,Args...>>::value;
 };
 
+template<typename List>
+struct Init;
+
+template<typename List,size_t N>
+struct Take;
+template<typename T,T...Args>
+struct Take<List<T,Args...>,0>{
+    using type=List<T>;
+};
+template<typename T,T H,T...Args>
+struct Take<List<T,H,Args...>,0>{
+    using type=List<T>;
+};
+template<typename T,T H,T...Args,size_t N>
+struct Take<List<T,H,Args...>,N>{
+    using type=typename PushFront<typename Take<List<T, Args...>,N-1>::type, H>::type;
+};
+
+template<typename T,int N,size_t X>
+struct Replicate{
+    using type=typename PushFront<typename Replicate<T,N-1,X>::type, X>::type;
+};
+
+template<typename T,size_t X>
+struct Replicate<T,0,X>{
+    using type=List<T>;
+};
+
+template<typename List>
+struct Reverse;
+
+template<typename T>
+struct Reverse<List<T>>{
+    using type=List<T>;
+};
+
+template<typename T,T H,T...Args>
+struct Reverse<List<T,H,Args...>>{
+    using type=typename PushBack<typename Reverse<List<T,Args...>>::type, H>::type;
+};
 
 
 
+namespace Imple{
+template<typename T,T a,T b>
+struct ValueLE{
+    static constexpr bool value=a<=b;
+};
+template<typename T,T a,T b>
+struct ValueGT{
+    static constexpr bool value=a>b;
+};
+
+template<template<typename T,T a,T b>class Op,typename List,typename List::type Value>
+struct Select;
+template<template<typename T,T a,T b>class Op,typename T,T Value>
+struct Select<Op,List<T>,Value>{
+    using type=List<T>;
+};
+template<template<typename T,T a,T b>class Op,typename T,T H,T...Args,T Value>
+struct Select<Op,List<T,H,Args...>,Value>{
+    static constexpr bool nowOk=Op<T,H,Value>::value;
+    using type=typename std::conditional<nowOk,typename PushFront<typename Select<Op,List<T, Args...>,Value>::type, H>::type ,typename Select<Op,List<T, Args...>,Value>::type>::type;
+
+};
+
+}
+template<typename List>
+struct QuickSort;
+
+template<typename T>
+struct QuickSort<List<T>>{
+    using type=List<T>;
+};
+template<typename T,T H,T...Args>
+struct QuickSort<List<T, H,Args...>>{
+    using smallerSorted=typename QuickSort<typename Imple::Select<Imple::ValueLE, List<T, Args...>, H>::type>::type;
+    using biggerSorted=typename QuickSort<typename Imple::Select<Imple::ValueGT, List<T, Args...>, H>::type>::type;
+    using type=typename ListCnt<typename PushBack<smallerSorted, H>::type, biggerSorted>::type;
+};
 } 
-
 #endif /* List_hpp */

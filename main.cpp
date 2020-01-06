@@ -20,6 +20,7 @@ int main(){
     using l2=List<int,1,2>;
     using l3=List<int,1,2,3>;
     using l4=List<int,1,2,3,4>;
+    using l5=List<int, 13,4938,4,3,455,12,9,706>;
     cout<<Maximum<l3>::value<<endl;
     cout<<Minimum<l3>::value<<endl;
     cout<<Length<l3>::value<<endl;
@@ -34,5 +35,10 @@ int main(){
     cout<<Elem<l4, 5>::value<<endl;
     PrintList<l3>::Show();
     cout<<Last<l4>::value<<endl;
+    PrintList<Take<l3, 0>::type>::Show();
+    PrintList<Replicate<int, 0, 5>::type>::Show();
+    PrintList<Reverse<l4>::type>::Show();
+    PrintList<QuickSort<l5>::type>::Show();
+ //   PrintList<Select<ValueLE, l4, 3>::type>::Show();
 }
 
