@@ -309,5 +309,32 @@ struct QuickSort<List<T, H,Args...>>{
     using biggerSorted=typename QuickSort<typename Imple::Select<Imple::ValueGT, List<T, Args...>, H>::type>::type;
     using type=typename ListCnt<typename PushBack<smallerSorted, H>::type, biggerSorted>::type;
 };
+
+template<typename List,template<typename List::type Value> class Op>
+struct Map;
+template<typename T,template<T Value> class Op>
+struct Map<List<T>,Op>{
+    using type=List<T>;
+};
+template<typename T,T H,T...Args,template<T Value> class Op>
+struct Map<List<T,H,Args...>,Op>{
+    using type=typename PushFront<typename Map<List<T, Args...>, Op>::type,Op<H>::value>::type;
+};
+
+template<typename List,template<typename List::type Value> class Op>
+struct Filter;
+template<typename T,template<T Value> class Op>
+struct Filter<List<T>,Op>{
+    using type=List<T>;
+};
+template<typename T,T H,T...Args,template<T Value> class Op>
+struct Filter<List<T,H,Args...>,Op>{
+    using trueType=typename PushFront<typename Filter<List<T,Args...>, Op>::type,H>::type;
+    using falseType=typename Filter<List<T,Args...>, Op>::type;
+    using type=typename std::conditional<Op<H>::value, trueType, falseType>::type;
+};
+
+
+
 } 
 #endif /* List_hpp */

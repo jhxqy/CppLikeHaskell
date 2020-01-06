@@ -12,7 +12,16 @@ using namespace std;
 template<typename T>
 struct Show;
 
-
+template<int N>
+struct AddOne{
+    static constexpr int value=N+1;
+};
+template<int T,int N>
+struct MoreThan{
+    static constexpr bool value=T>N;
+};
+template<int T>
+using MoreThanFive=MoreThan<T, 20 >;
 int main(){
     using namespace List;
     using l0=List<int>;
@@ -39,6 +48,7 @@ int main(){
     PrintList<Replicate<int, 0, 5>::type>::Show();
     PrintList<Reverse<l4>::type>::Show();
     PrintList<QuickSort<l5>::type>::Show();
- //   PrintList<Select<ValueLE, l4, 3>::type>::Show();
+    PrintList<Map<l4,AddOne>::type>::Show();
+    PrintList<Filter<l5,MoreThanFive>::type>::Show();
 }
 
