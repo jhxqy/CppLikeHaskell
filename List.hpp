@@ -333,8 +333,25 @@ struct Filter<List<T,H,Args...>,Op>{
     using falseType=typename Filter<List<T,Args...>, Op>::type;
     using type=typename std::conditional<Op<H>::value, trueType, falseType>::type;
 };
+//foldl 参数为二元函数、列表、初始值
+
+template<typename List,typename InitType,template<InitType,typename List::type>class Op,InitType init>
+struct Foldl;
+
+template<typename T,typename InitType,template<InitType,T>class Op,InitType init>
+struct Foldl<List<T>,InitType,Op,init>{
+    static constexpr InitType value=init;
+};
+template<typename T,T H,T...Args,typename InitType,template<InitType,T>class Op,InitType init>
+struct Foldl<List<T,H,Args...>,InitType,Op,init>{
+    static constexpr InitType value=Foldl<List<T, Args...>,InitType,Op,Op<init, H>::value>::value;
+};
 
 
+}
+//template<typename List,template<typename,typename>class Op,typename Init>
+//struct Foldl;
+//
 
-} 
+
 #endif /* List_hpp */

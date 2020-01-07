@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "List.hpp"
+#include "rewrite_list.hpp"
 using namespace std;
 template<typename T>
 struct Show;
@@ -22,7 +23,12 @@ struct MoreThan{
 };
 template<int T>
 using MoreThanFive=MoreThan<T, 20 >;
-int main(){
+
+template<int init,int a>
+struct ADD{
+    static constexpr int value=init+a;
+};
+void Old(){
     using namespace List;
     using l0=List<int>;
     using l1=List<int,1>;
@@ -50,5 +56,23 @@ int main(){
     PrintList<QuickSort<l5>::type>::Show();
     PrintList<Map<l4,AddOne>::type>::Show();
     PrintList<Filter<l5,MoreThanFive>::type>::Show();
+    cout<<Foldl<l4, int, ADD, 0>::value<<endl;
+}
+void New(){
+    
+    using namespace typelist;
+    
+    using l1=List<Int<1>,Int<2>,Int<3>,Int<4>>;
+    using l2=Tail<l1>::type;
+    PrintList<l1>::Show();
+    PrintList<l2>::Show();
+    cout<<Sum<l1>::type::value<<endl;
+    PrintList<Reverse<l1>::type>::Show();
+}
+    
+int main(){
+    //Old();
+    New();
+    
 }
 
