@@ -62,17 +62,18 @@ void New(){
     
     using namespace typelist;
     
-    using l1=List<Int<1>,Int<2>,Int<3>,Int<4>>;
+    using l1=TypeList<Int<1>,Int<2>,Int<3>,Int<4>>;
     using l2=Tail<l1>::type;
+    using l3=TypeList<Int<43>,Int<25>,Int<33>,Int<11>,Int<98>,Int<54>>;
     PrintList<l1>::Show();
     PrintList<l2>::Show();
     cout<<Sum<l1>::type::value<<endl;
     PrintList<Reverse<l1>::type>::Show();
+    PrintList<QuickSort<l3>::type>::Show();
 }
     
 int main(){
     //Old();
     New();
-    
-}
 
+}
