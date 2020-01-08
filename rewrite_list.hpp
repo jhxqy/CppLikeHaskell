@@ -167,7 +167,7 @@ template<typename H,typename...Args,template<typename >class Op>
 struct Filter<TypeList<H,Args...>,Op>{
     using trueType=typename PushFront<typename Filter<TypeList<Args...>,Op>::type, H>::type;
     using falseType=typename Filter<TypeList<Args...>, Op>::type;
-    using type=typename std::conditional<Op<H>::value, trueType, falseType>::type;
+    using type=typename std::conditional<Op<H>::type::value, trueType, falseType>::type;
 };
 
 //foldl 参数为二元函数、列表、初始值
@@ -225,13 +225,13 @@ template<typename T1,typename T2>
 struct QuickImpleLE{
     using Op=typename TypeOp<T1>::type;
     using type=typename Op::template LE<T1,T2>::type;
-    static constexpr bool  value=type::value;
+ //   static constexpr bool  value=type::value;
 };
 template<typename T1,typename T2>
 struct QuickImpleGT{
     using Op=typename TypeOp<T1>::type;
     using type=typename Op::template GT<T1,T2>::type;
-    static constexpr bool  value=type::value;
+  //  static constexpr bool  value=type::value;
 
 };
 }
